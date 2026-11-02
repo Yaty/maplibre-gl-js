@@ -39,6 +39,7 @@ export class HillshadeStyleLayer extends StyleLayer {
     }
 
     hasOffscreenPass(): boolean {
-        return this.paint.get('hillshade-exaggeration') !== 0 && !this.isHidden();
+        const drawn = this.paint.get('hillshade-method') === 'slope-classes' || this.paint.get('hillshade-exaggeration') !== 0;
+        return drawn && !this.isHidden();
     }
 }

@@ -23,6 +23,7 @@ export function backfillDEM(tile: Tile, inViewTiles: InViewTiles): void {
 
 function fillBorder(tile: Tile, borderTile: Tile) {
     tile.needsHillshadePrepare = true;
+    tile.needsSlopeClassesPrepare = true;
     tile.needsTerrainPrepare = true;
     tile.needsColorReliefPrepare = true;
     let dx = borderTile.tileID.canonical.x - tile.tileID.canonical.x;

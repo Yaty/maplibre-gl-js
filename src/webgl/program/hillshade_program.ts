@@ -40,6 +40,77 @@ export type HillshadePrepareUniformsType = {
     'u_log2_world_width': Uniform1f;
 };
 
+export type SlopeClassesUniformsType = {
+    'u_image': Uniform1i;
+    'u_breaks': UniformFloatArray;
+    'u_colors': UniformColorArray;
+};
+
+export type SlopeClassesPrepareUniformsType = {
+    'u_matrix': UniformMatrix4f;
+    'u_image': Uniform1i;
+    'u_dimension': Uniform2f;
+    'u_grid': Uniform4f;
+    'u_unpack': Uniform4f;
+};
+
+/** The relief zoom from which the heights are smoothed before Horn's method: a mean on a coarser relief softens steep slopes. */
+export const SLOPE_CLASSES_SMOOTH_FROM_ZOOM = 14;
+
+/** The earth's circumference at the equator, in meters. */
+const EARTH_CIRCUMFERENCE = 40075016.68557849;
+
+const slopeClassesUniforms = (context: Context, locations: UniformLocations): SlopeClassesUniformsType => ({
+    'u_image': new Uniform1i(context, locations.u_image),
+    'u_breaks': new UniformFloatArray(context, locations.u_breaks),
+    'u_colors': new UniformColorArray(context, locations.u_colors)
+});
+
+const slopeClassesPrepareUniforms = (context: Context, locations: UniformLocations): SlopeClassesPrepareUniformsType => ({
+    'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
+    'u_image': new Uniform1i(context, locations.u_image),
+    'u_dimension': new Uniform2f(context, locations.u_dimension),
+    'u_grid': new Uniform4f(context, locations.u_grid),
+    'u_unpack': new Uniform4f(context, locations.u_unpack)
+});
+
+/** The shader takes four breaks and five colors: a missing break is never reached, a missing color repeats the last one. */
+const slopeClassesUniformValues = (layer: HillshadeStyleLayer): UniformValues<SlopeClassesUniformsType> => {
+    const breaks = layer.paint.get('hillshade-slope-breaks').values;
+    const colors = layer.paint.get('hillshade-slope-colors').values;
+    return {
+        'u_image': 0,
+        'u_breaks': [0, 1, 2, 3].map(i => breaks[i] ?? 1000),
+        'u_colors': [0, 1, 2, 3, 4].map(i => colors[i] ?? colors.at(-1))
+    };
+};
+
+/**
+ * `u_grid` holds the meters per DEM pixel at the equator, the global row of the framebuffer's first row (it starts one
+ * pixel above the tile), the rows of the world, and 1 to smooth the heights first. The rows of the world are 0 on a plane
+ * that does not wrap: it is rendered in its own units, and the shader applies no correction by latitude.
+ */
+const slopeClassesPrepareUniformValues = (transform: IReadonlyTransform, tileID: OverscaledTileID, dem: DEMData): UniformValues<SlopeClassesPrepareUniformsType> => {
+    const matrix = mat4.create();
+    mat4.ortho(matrix, 0, EXTENT, -EXTENT, 0, 0, 1);
+    mat4.translate(matrix, matrix, [0, -EXTENT, 0]);
+    const worldCoordinateHelper = transform.worldCoordinateHelper;
+    const worldRows = dem.dim * Math.pow(2, tileID.canonical.z);
+    const worldWidth = worldCoordinateHelper.wraps ? EARTH_CIRCUMFERENCE : worldCoordinateHelper.metersPerWorldUnit(0.5, 0.5);
+    return {
+        'u_matrix': matrix,
+        'u_image': 1,
+        'u_dimension': [dem.stride, dem.stride],
+        'u_grid': [
+            worldWidth / worldRows,
+            tileID.canonical.y * dem.dim - 1,
+            worldCoordinateHelper.wraps ? worldRows : 0,
+            tileID.canonical.z >= SLOPE_CLASSES_SMOOTH_FROM_ZOOM ? 1 : 0
+        ],
+        'u_unpack': dem.getUnpackVector()
+    };
+};
+
 const hillshadeUniforms = (context: Context, locations: UniformLocations): HillshadeUniformsType => ({
     'u_image': new Uniform1i(context, locations.u_image),
     'u_latrange': new Uniform2f(context, locations.u_latrange),
@@ -158,5 +229,9 @@ export {
     hillshadeUniforms,
     hillshadePrepareUniforms,
     hillshadeUniformValues,
-    hillshadeUniformPrepareValues
+    hillshadeUniformPrepareValues,
+    slopeClassesUniforms,
+    slopeClassesPrepareUniforms,
+    slopeClassesUniformValues,
+    slopeClassesPrepareUniformValues
 };

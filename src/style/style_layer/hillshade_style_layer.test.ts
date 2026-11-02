@@ -104,4 +104,12 @@ describe('HillshadeStyleLayer', () => {
         expect(illumination.highlightColor).toEqual([Color.red, Color.red]);
         expect(illumination.shadowColor).toEqual([Color.black, Color.white]);
     });
+
+    test('prepares slope classes whatever the exaggeration', () => {
+        const paint = {'hillshade-exaggeration': 0};
+        const shading = createStyleLayer(createLayerSpec({paint}), {}) as HillshadeStyleLayer;
+        const slopeClasses = createStyleLayer(createLayerSpec({paint: {...paint, 'hillshade-method': 'slope-classes'}}), {}) as HillshadeStyleLayer;
+        expect(shading.hasOffscreenPass()).toBe(false);
+        expect(slopeClasses.hasOffscreenPass()).toBe(true);
+    });
 });

@@ -1,0 +1,47 @@
+{
+  "version": 8,
+  "metadata": {
+    "test": {
+      "height": 256,
+      "width": 256
+    }
+  },
+  "center": [
+    6.690673828125,
+    46.56641407568592
+  ],
+  "zoom": 13,
+  "sources": {
+    "source": {
+      "type": "raster-dem",
+      "tiles": [
+        "local://tiles/{z}-{x}-{y}.terrarium.png"
+      ],
+      "maxzoom": 14,
+      "tileSize": 256,
+      "encoding": "terrarium"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "white"
+      }
+    },
+    {
+      "id": "shading",
+      "type": "hillshade",
+      "source": "source"
+    },
+    {
+      "id": "slope-classes",
+      "type": "hillshade",
+      "source": "source",
+      "paint": {
+        "hillshade-method": "slope-classes"
+      }
+    }
+  ]
+}

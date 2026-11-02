@@ -105,11 +105,13 @@ export class Tile {
     demMatrix: mat4;
     aborted: boolean;
     needsHillshadePrepare: boolean;
+    needsSlopeClassesPrepare: boolean;
     needsTerrainPrepare: boolean;
     needsColorReliefPrepare: boolean;
     abortController: AbortController;
     texture: any;
     fbo: Framebuffer;
+    slopeClassesFbo: Framebuffer;
     demTexture: Texture;
     refreshedUponExpiration: boolean;
     reloadPromise: {resolve: () => void; reject: () => void};

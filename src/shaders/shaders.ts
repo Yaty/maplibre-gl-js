@@ -39,6 +39,8 @@ import hillshadePrepareFrag from './glsl/hillshade_prepare.fragment.glsl.g.ts';
 import hillshadePrepareVert from './glsl/hillshade_prepare.vertex.glsl.g.ts';
 import hillshadeFrag from './glsl/hillshade.fragment.glsl.g.ts';
 import hillshadeVert from './glsl/hillshade.vertex.glsl.g.ts';
+import slopeClassesPrepareFrag from './glsl/slope_classes_prepare.fragment.glsl.g.ts';
+import slopeClassesFrag from './glsl/slope_classes.fragment.glsl.g.ts';
 import lineFrag from './glsl/line.fragment.glsl.g.ts';
 import lineVert from './glsl/line.vertex.glsl.g.ts';
 import lineGradientFrag from './glsl/line_gradient.fragment.glsl.g.ts';
@@ -104,6 +106,8 @@ export const shaders: {
     fillExtrusionPattern: PreparedShader;
     hillshadePrepare: PreparedShader;
     hillshade: PreparedShader;
+    slopeClassesPrepare: PreparedShader;
+    slopeClasses: PreparedShader;
     line: PreparedShader;
     lineGradient: PreparedShader;
     linePattern: PreparedShader;
@@ -142,6 +146,8 @@ export const shaders: {
     fillExtrusionPattern: prepare(fillExtrusionPatternFrag, fillExtrusionPatternVert),
     hillshadePrepare: prepare(hillshadePrepareFrag, hillshadePrepareVert),
     hillshade: prepare(hillshadeFrag, hillshadeVert),
+    slopeClassesPrepare: prepare(slopeClassesPrepareFrag, hillshadePrepareVert),
+    slopeClasses: prepare(slopeClassesFrag, hillshadeVert),
     line: prepare(lineFrag, lineVert),
     lineGradient: prepare(lineGradientFrag, lineGradientVert),
     linePattern: prepare(linePatternFrag, linePatternVert),

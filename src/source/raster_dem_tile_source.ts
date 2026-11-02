@@ -99,6 +99,7 @@ export class RasterDEMTileSource extends RasterTileSource implements Source {
                 }
                 tile.dem = await tile.actor.sendAsync({type: MessageType.loadDEMTile, data: params});
                 tile.needsHillshadePrepare = true;
+                tile.needsSlopeClassesPrepare = true;
                 tile.needsTerrainPrepare = true;
                 tile.needsColorReliefPrepare = true;
                 tile.state = 'loaded';
@@ -162,6 +163,10 @@ export class RasterDEMTileSource extends RasterTileSource implements Source {
         if (tile.fbo) {
             tile.fbo.destroy();
             delete tile.fbo;
+        }
+        if (tile.slopeClassesFbo) {
+            tile.slopeClassesFbo.destroy();
+            delete tile.slopeClassesFbo;
         }
         if (tile.dem) delete tile.dem;
         delete tile.neighboringTiles;

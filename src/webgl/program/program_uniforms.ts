@@ -3,7 +3,7 @@ import {fillPatternUniforms, fillOutlineUniforms, fillOutlinePatternUniforms, fi
 import {circleUniforms, type CircleUniformsType} from './circle_program.ts';
 import {debugUniforms, type DebugUniformsType} from './debug_program.ts';
 import {heatmapUniforms, heatmapTextureUniforms, type HeatmapUniformsType, type HeatmapTextureUniformsType} from './heatmap_program.ts';
-import {hillshadeUniforms, hillshadePrepareUniforms, type HillshadeUniformsType, type HillshadePrepareUniformsType} from './hillshade_program.ts';
+import {hillshadeUniforms, hillshadePrepareUniforms, slopeClassesUniforms, slopeClassesPrepareUniforms, type HillshadeUniformsType, type HillshadePrepareUniformsType, type SlopeClassesUniformsType, type SlopeClassesPrepareUniformsType} from './hillshade_program.ts';
 import {colorReliefUniforms, type ColorReliefUniformsType} from './color_relief_program.ts';
 import {lineUniforms, lineGradientUniforms, linePatternUniforms, lineSDFUniforms, lineGradientSDFUniforms, type LineUniformsType, type LineGradientUniformsType, type LinePatternUniformsType, type LineSDFUniformsType, type LineGradientSDFUniformsType} from './line_program.ts';
 import {layerOpacityUniforms, type LayerOpacityUniformsType} from './layer_opacity_program.ts';
@@ -38,6 +38,8 @@ export const programUniforms: {
     heatmapTexture: (context: Context, locations: UniformLocations) => HeatmapTextureUniformsType;
     hillshade: (context: Context, locations: UniformLocations) => HillshadeUniformsType;
     hillshadePrepare: (context: Context, locations: UniformLocations) => HillshadePrepareUniformsType;
+    slopeClasses: (context: Context, locations: UniformLocations) => SlopeClassesUniformsType;
+    slopeClassesPrepare: (context: Context, locations: UniformLocations) => SlopeClassesPrepareUniformsType;
     colorRelief: (context: Context, locations: UniformLocations) => ColorReliefUniformsType;
     line: (context: Context, locations: UniformLocations) => LineUniformsType;
     lineGradient: (context: Context, locations: UniformLocations) => LineGradientUniformsType;
@@ -73,6 +75,8 @@ export const programUniforms: {
     heatmapTexture: heatmapTextureUniforms,
     hillshade: hillshadeUniforms,
     hillshadePrepare: hillshadePrepareUniforms,
+    slopeClasses: slopeClassesUniforms,
+    slopeClassesPrepare: slopeClassesPrepareUniforms,
     colorRelief: colorReliefUniforms,
     line: lineUniforms,
     lineGradient: lineGradientUniforms,
